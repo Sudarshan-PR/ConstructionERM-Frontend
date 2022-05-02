@@ -28,6 +28,13 @@
             path: '/expense',
           }"
         />
+        <sidebar-item
+          :link="{
+            name: 'User Management',
+            icon: 'ni ni-single-02',
+            path: '/usermanagement',
+          }"
+        />
         <!-- <sidebar-item
           :link="{
             name: 'Icons',
@@ -73,6 +80,7 @@
       </template>
     </side-bar>
     <div class="main-content" :data="sidebarBackground">
+      <!-- Dashboard -->
       <dashboard-navbar></dashboard-navbar>
 
       <div @click="toggleSidebar">

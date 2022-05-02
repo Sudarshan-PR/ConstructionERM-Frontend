@@ -12,7 +12,7 @@
         <base-button
           type="default"
           icon="fa fa-plus"
-          @click="showExpenseHeadModal = true"
+          @click="showBeneficiaryModal = true"
         >
           Add Beneficiary
         </base-button>
@@ -29,10 +29,15 @@
         @close="showExpenseModal = false"
         @click.self="showExpenseModal = false"
       ></create-expense-modal>
+      <create-beneficiary-modal
+        :show-modal="showBeneficiaryModal"
+        @close="showBeneficiaryModal = false"
+        @click.self="showBeneficiaryModal = false"
+      ></create-beneficiary-modal>
       <create-expense-head-modal
         :show-modal="showExpenseHeadModal"
         @close="showExpenseHeadModal = false"
-        @click.self="showExpenseModal = false"
+        @click.self="showExpenseHeadModal = false"
       ></create-expense-head-modal>
     </base-header>
 
@@ -52,6 +57,7 @@
 import ExpenseTable from "../components/CERMTables/ExpenseTable";
 import CreateExpenseModal from "./Forms/CreateExpense";
 import CreateExpenseHeadModal from "./Forms/CreateExpenseHead";
+import CreateBeneficiaryModal from "./Forms/CreateBeneficiaryModal";
 
 export default {
   name: "Projects",
@@ -59,6 +65,7 @@ export default {
     ExpenseTable,
     CreateExpenseModal,
     CreateExpenseHeadModal,
+    CreateBeneficiaryModal,
   },
   data() {
     return {
@@ -67,6 +74,7 @@ export default {
       projects: [],
       showExpenseModal: false,
       showExpenseHeadModal: false,
+      showBeneficiaryModal: false,
     };
   },
   mounted() {

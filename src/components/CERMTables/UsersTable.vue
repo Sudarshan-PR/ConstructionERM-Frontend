@@ -26,12 +26,11 @@
       >
         <template #columns>
           <th>Project</th>
-          <th>Amount</th>
-          <th>Vendor Name</th>
-          <th>Expense Type</th>
-          <th>Date</th>
-          <th>Payment Type</th>
-          <th>Outstanding Amount</th>
+          <th>Budget</th>
+          <th>Status</th>
+          <th>Location</th>
+          <th>Completion</th>
+          <th></th>
         </template>
 
         <template #default="row">
@@ -105,7 +104,7 @@
 </template>
 <script>
 export default {
-  name: "ExpenseTable",
+  name: "UsersTable",
   props: ["type", "title", "data"],
   data() {
     return {

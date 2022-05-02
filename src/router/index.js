@@ -14,6 +14,7 @@ import Register from "../views/Register.vue";
 
 import Project from "../views/Projects.vue";
 import Expense from "../views/Expense.vue";
+import UserManagement from "../views/UserManagement.vue";
 
 const routes = [
   {
@@ -55,6 +56,11 @@ const routes = [
         path: "/expense",
         name: "Expenses",
         components: { default: Expense },
+      },
+      {
+        path: "/usermanagement",
+        name: "User Management",
+        components: { default: UserManagement },
       },
     ],
   },

@@ -13,8 +13,8 @@
       </base-input>
       <base-input label="Expense Type">
         <select class="form-control">
-          <option v-for="project in projects" :key="project.id">
-            {{ project.name }}
+          <option v-for="expensehead in expenseheadlist" :key="expensehead.id">
+            {{ expensehead.name }}
           </option>
         </select>
       </base-input>
@@ -83,6 +83,7 @@ export default {
       createProjectModal: false,
       date: new Date(),
       projects: [],
+      expenseheadlist: [],
       paymentRadio: "half-paid",
     };
   },
@@ -94,6 +95,12 @@ export default {
         this.projects = data;
       });
 
+    fetch("http://localhost:8000/expensehead/")
+      .then((response) => response.json())
+      .then((data) => {
+        console.log("Data fetch: ", data);
+        this.expenseheadlist = data;
+      });
     console.log("Fetched: ", this.projects);
   },
   methods: {
