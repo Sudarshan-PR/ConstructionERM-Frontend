@@ -4,34 +4,34 @@
       <div class="row">
         <div class="col-xl-3 col-lg-6">
           <stats-card
-            title="Total traffic"
-            type="gradient-red"
-            sub-title="350,897"
-            icon="ni ni-active-40"
+            title="Total Bills Raised"
+            type="gradient-orange"
+            :sub-title="values['total']"
+            icon="ni ni-money-coins"
             class="mb-4 mb-xl-0"
           >
-            <template #footer>
+            <!-- <template #footer>
               <span class="text-success mr-2">
                 <i class="fa fa-arrow-up"></i> 3.48%
               </span>
               <span class="text-nowrap">Since last month</span>
-            </template>
+            </template> -->
           </stats-card>
         </div>
         <div class="col-xl-3 col-lg-6">
           <stats-card
-            title="Total traffic"
-            type="gradient-orange"
-            sub-title="2,356"
-            icon="ni ni-chart-pie-35"
+            title="Total Outstanding Amount"
+            type="gradient-red"
+            :sub-title="values['outstanding']"
+            icon="fa fa-balance-scale"
             class="mb-4 mb-xl-0"
           >
-            <template #footer>
+            <!-- <template #footer>
               <span class="text-success mr-2">
                 <i class="fa fa-arrow-up"></i> 12.18%
               </span>
               <span class="text-nowrap">Since last month</span>
-            </template>
+            </template> -->
           </stats-card>
         </div>
         <div class="col-xl-3 col-lg-6">
@@ -151,6 +151,7 @@
 // Charts
 import { ordersChart } from "@/components/Charts/Chart";
 import Chart from "chart.js";
+import { authHeader, getCurrentUser, URL } from "../helpers/auth";
 
 import PageVisitsTable from "./Dashboard/PageVisitsTable";
 import SocialTrafficTable from "./Dashboard/SocialTrafficTable";
@@ -163,6 +164,7 @@ export default {
   },
   data() {
     return {
+      values: {},
       salesChartID: "salesChart",
       ordersChartID: "ordersChart",
       bigLineChart: {
@@ -175,6 +177,8 @@ export default {
     };
   },
   mounted() {
+    this.getValue("outstanding");
+    this.getValue("total");
     chart = new Chart(
       document.getElementById(this.salesChartID).getContext("2d"),
       {
@@ -247,6 +251,26 @@ export default {
     ordersChart.createChart(this.ordersChartID);
   },
   methods: {
+    getValue(item) {
+      this.user = getCurrentUser();
+      const params = new URLSearchParams({ item });
+      const url = `${URL}/kpi?${params.toString()}`;
+      console.log("URL: ", url);
+      fetch(url, {
+        method: "GET",
+        headers: { ...authHeader() },
+      })
+        .then((response) => {
+          console.log(response.status);
+          console.log(response.data);
+          const data = response.json();
+          return data;
+        })
+        .then((data) => {
+          console.log("Data fetch Expense: ", data);
+          this.values[item] = data ? data.total.toLocaleString("en-IN") : "0";
+        });
+    },
     initBigChart(index) {
       chart.destroy();
       chart = new Chart(

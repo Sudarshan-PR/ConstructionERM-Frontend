@@ -1,13 +1,14 @@
 <template>
-  <div class="wrapper" :class="{ 'nav-open': $sidebar.showSidebar }">
+  <div v-if="user" class="wrapper" ass="{ 'nav-open': $sidebar.showSidebar }">
     <side-bar
       :background-color="sidebarBackground"
       short-title="Argon"
       title="Argon"
-      logo="img/brand/High_Seas_Resized.svg"
+      logo="img/brand/High_Seas.png"
     >
       <template #links>
         <sidebar-item
+          v-if="['admin'].includes(user.role)"
           :link="{
             name: 'Dashboard',
             icon: 'ni ni-tv-2 text-primary',
@@ -29,10 +30,11 @@
           }"
         />
         <sidebar-item
+          v-if="['admin'].includes(user.role)"
           :link="{
             name: 'User Management',
             icon: 'ni ni-single-02',
-            path: '/usermanagement',
+            path: '/users',
           }"
         />
         <!-- <sidebar-item
@@ -86,24 +88,34 @@
       <div @click="toggleSidebar">
         <!-- your content here -->
         <router-view></router-view>
-        <content-footer v-if="!$route.meta.hideFooter"></content-footer>
+        <!-- <content-footer v-if="!$route.meta.hideFooter"></content-footer> -->
+        <footer class="py-4"></footer>
       </div>
     </div>
   </div>
 </template>
 <script>
 import DashboardNavbar from "./DashboardNavbar.vue";
-import ContentFooter from "./ContentFooter.vue";
+// import ContentFooter from "./ContentFooter.vue";
+import { getCurrentUser } from "../helpers/auth";
 
 export default {
   components: {
     DashboardNavbar,
-    ContentFooter,
+    // ContentFooter,
   },
   data() {
     return {
       sidebarBackground: "vue", //vue|blue|orange|green|red|primary
+      user: null,
     };
+  },
+  mounted() {
+    this.user = getCurrentUser();
+    console.log("User: ", this.user);
+    if (this.user === null) {
+      window.location.href = "/login";
+    }
   },
   methods: {
     toggleSidebar() {

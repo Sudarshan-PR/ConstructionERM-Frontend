@@ -1,5 +1,11 @@
 <template>
   <div class="card shadow" :class="type === 'dark' ? 'bg-default' : ''">
+    <update-expense-modal
+      :show-modal="updateExpenseModal.show"
+      :expense-id="updateExpenseModal.id"
+      @close="updateExpenseModal.show = false"
+      @click.self="updateExpenseModal.show = false"
+    ></update-expense-modal>
     <div
       class="card-header border-0"
       :class="type === 'dark' ? 'bg-transparent' : ''"
@@ -7,7 +13,7 @@
       <div class="row align-items-center">
         <div class="col">
           <h3 class="mb-0" :class="type === 'dark' ? 'text-white' : ''">
-            {{ title }}
+            Expenses
           </h3>
         </div>
         <div class="col text-right">
@@ -18,6 +24,7 @@
 
     <div class="table-responsive">
       <base-table
+        v-if="tableData"
         class="table align-items-center table-flush"
         :class="type === 'dark' ? 'table-dark' : ''"
         :thead-classes="type === 'dark' ? 'thead-dark' : 'thead-light'"
@@ -25,52 +32,80 @@
         :data="tableData"
       >
         <template #columns>
-          <th>Project</th>
+          <th>Title</th>
+          <th>User</th>
           <th>Amount</th>
           <th>Vendor Name</th>
-          <th>Expense Type</th>
           <th>Date</th>
-          <th>Payment Type</th>
+          <th>Expense Head</th>
           <th>Outstanding Amount</th>
+          <!-- <th></th> -->
         </template>
 
         <template #default="row">
-          <th scope="row">
-            <div class="media align-items-center">
+          <th scope="row" @click="showUpdateExpenseModal(row.item.id)">
+            <div
+              class="media align-items-center"
+              :class="{ 'text-danger': !row.item.image }"
+              role="button"
+            >
               <!-- <a href="#" class="avatar rounded-circle mr-3">
                 <img alt="Image placeholder" :src="row.item.img" />
               </a> -->
               <div class="media-body">
-                <span class="name mb-0 text-sm">{{ row.item.name }}</span>
+                <span class="name mb-0 text-sm">{{ row.item.title }}</span>
               </div>
             </div>
           </th>
-          <td class="budget">₹ {{ row.item.budget }}</td>
+          <td class="username">{{ row.item.user_name.toUpperCase() }}</td>
+          <td class="Total Amount">₹ {{ row.item.total_amount }}</td>
+          <td class="vendor">{{ row.item.vendor }}</td>
           <td>
-            <badge class="badge-dot mr-4" :type="statusType[row.item.status]">
-              <i :class="`bg-${statusType[row.item.status]}`"></i>
-              <span class="status">{{ row.item.status }}</span>
+            <span class="date">{{
+              `${new Date(row.item.date).getUTCDate()} - ${new Date(
+                row.item.date
+              ).getMonth()} - ${new Date(row.item.date).getFullYear()}`
+            }}</span>
+          </td>
+          <td class="head">{{ row.item.head }}</td>
+          <td>
+            <badge
+              class="badge-dot mr-4"
+              :type="
+                statusType[
+                  row.item.total_amount - row.item.total_paid > 0
+                    ? 'Paid'
+                    : 'Outstanding'
+                ]
+              "
+            >
+              <i
+                :class="`bg-${
+                  statusType[
+                    row.item.total_amount - row.item.total_paid > 0
+                      ? 'Outstanding'
+                      : 'Paid'
+                  ]
+                }`"
+              ></i>
+              <span
+                :class="`text-${
+                  statusType[
+                    row.item.total_amount - row.item.total_paid > 0
+                      ? 'Outstanding'
+                      : 'Paid'
+                  ]
+                }`"
+                >{{
+                  row.item.total_amount - row.item.total_paid > 0
+                    ? row.item.total_amount - row.item.total_paid
+                    : "Paid"
+                }}
+              </span>
             </badge>
           </td>
-          <td>
-            <span class="status">{{ row.item.location }}</span>
-          </td>
 
-          <td>
-            <div class="d-flex align-items-center">
-              <span class="completion mr-2">{{ 60 }}%</span>
-              <div>
-                <base-progress
-                  :type="statusType[row.item.status]"
-                  :show-percentage="false"
-                  class="pt-0"
-                  :value="60"
-                />
-              </div>
-            </div>
-          </td>
-
-          <td class="text-right">
+          <!-- <td class="text-right">
             <base-dropdown class="dropdown" position="right">
               <template #title>
                 <a
@@ -90,78 +125,68 @@
                 <a class="dropdown-item" href="#">Something else here</a>
               </template>
             </base-dropdown>
-          </td>
+          </td> -->
         </template>
       </base-table>
     </div>
-
-    <div
+  </div>
+  <!-- <div
       class="card-footer d-flex justify-content-end"
       :class="type === 'dark' ? 'bg-transparent' : ''"
     >
       <base-pagination total="30"></base-pagination>
-    </div>
-  </div>
+    </div> -->
 </template>
 <script>
+import { authHeader, getCurrentUser, URL } from "../../helpers/auth";
+import UpdateExpenseModal from "../../views/Forms/UpdateExpense";
+
 export default {
   name: "ExpenseTable",
-  props: ["type", "title", "data"],
+  components: {
+    UpdateExpenseModal,
+  },
+  props: ["type"],
   data() {
     return {
-      tableData: [
-        {
-          img: "img/theme/bootstrap.jpg",
-          title: "Argon Design System",
-          budget: "$2500 USD",
-          status: "pending",
-          statusType: "warning",
-          completion: 60,
-        },
-        {
-          img: "img/theme/angular.jpg",
-          title: "Angular Now UI Kit PRO",
-          budget: "$1800 USD",
-          status: "completed",
-          statusType: "success",
-          completion: 100,
-        },
-        {
-          img: "img/theme/sketch.jpg",
-          title: "Black Dashboard",
-          budget: "$3150 USD",
-          status: "delayed",
-          statusType: "danger",
-          completion: 72,
-        },
-        {
-          img: "img/theme/react.jpg",
-          title: "React Material Dashboard",
-          budget: "$4400 USD",
-          status: "on schedule",
-          statusType: "info",
-          completion: 90,
-        },
-        {
-          img: "img/theme/vue.jpg",
-          title: "Vue Paper UI Kit PRO",
-          budget: "$2200 USD",
-          status: "completed",
-          statusType: "success",
-          completion: 100,
-        },
-      ],
+      updateExpenseModal: {
+        show: false,
+        id: null,
+      },
+      tableData: null,
       statusType: {
-        "in-progress": "info",
-        completed: "success",
-        delayed: "danger",
+        Paid: "success",
+        Outstanding: "danger",
       },
     };
   },
   mounted() {
-    if (this.data) {
-      this.tableData = this.data;
-    }
+    this.getExpenses();
+  },
+  methods: {
+    showUpdateExpenseModal(id) {
+      this.updateExpenseModal.id = id;
+      this.updateExpenseModal.show = true;
+    },
+    getExpenses() {
+      this.user = getCurrentUser();
+      fetch(`${URL}/expenses/`, {
+        method: "GET",
+        headers: { ...authHeader() },
+      })
+        .then((response) => {
+          console.log(response.status);
+          console.log(response.data);
+          const data = response.json();
+
+          console.log("Data expense json: ", data);
+          return data;
+        })
+        .then((data) => {
+          console.log("Data fetch Expense: ", data);
+          this.tableData = data;
+        });
+    },
   },
 };
 </script>

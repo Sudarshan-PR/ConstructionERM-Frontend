@@ -1,11 +1,11 @@
 <template>
   <base-nav
-    class="navbar-top navbar-dark"
     id="navbar-main"
+    class="navbar-top navbar-dark"
     :show-toggle-button="false"
     expand
   >
-    <form
+    <!-- <form
       class="navbar-search navbar-search-dark form-inline mr-3 d-none d-md-flex ml-lg-auto"
     >
       <div class="form-group mb-0">
@@ -21,7 +21,7 @@
     <ul class="navbar-nav align-items-center d-none d-md-flex">
       <li class="nav-item dropdown">
         <base-dropdown class="nav-link pr-0">
-          <template v-slot:title>
+          <template #title>
             <div class="media align-items-center">
               <span class="avatar avatar-sm rounded-circle">
                 <img
@@ -54,13 +54,13 @@
             <span>Support</span>
           </router-link>
           <div class="dropdown-divider"></div>
-          <router-link to="/profile" class="dropdown-item">
+          <router-link to="/logout" class="dropdown-item">
             <i class="ni ni-user-run"></i>
             <span>Logout</span>
           </router-link>
         </base-dropdown>
       </li>
-    </ul>
+    </ul> -->
   </base-nav>
 </template>
 <script>

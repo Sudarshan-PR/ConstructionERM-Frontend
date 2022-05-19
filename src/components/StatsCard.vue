@@ -3,22 +3,22 @@
     <div class="row">
       <div class="col">
         <slot>
-          <h5 class="card-title text-uppercase text-muted mb-0" v-if="title">
+          <h5 v-if="title" class="card-title text-uppercase text-muted mb-0">
             {{ title }}
           </h5>
-          <span class="h2 font-weight-bold mb-0" v-if="subTitle">{{
+          <span v-if="subTitle" class="h2 font-weight-bold mb-0">{{
             subTitle
           }}</span>
         </slot>
       </div>
 
-      <div class="col-auto" v-if="$slots.icon || icon">
+      <div v-if="$slots.icon || icon" class="col-auto">
         <slot name="icon">
           <div
             class="icon icon-shape text-white rounded-circle shadow"
             :class="[`bg-${type}`, iconClasses]"
           >
-            <i :class="icon"></i>
+            <i :class="icon" aria-hidden="true"></i>
           </div>
         </slot>
       </div>
@@ -33,7 +33,7 @@
 import Card from "./Card.vue";
 
 export default {
-  name: "stats-card",
+  name: "StatsCard",
   components: {
     Card,
   },

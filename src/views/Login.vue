@@ -7,22 +7,22 @@
         >
           <img
             class="w-75"
-            src="../assets/High_Seas_Resized.svg"
+            src="img/brand/High_Seas.png"
             alt="High Seas Logo"
           />
         </div>
         <div class="card- body px-lg-5 py-lg-5">
           <form role="form">
             <base-input
-              v-model="model.email"
+              v-model="username"
               form-classes="input-group-alternative mb-3"
-              placeholder="Email"
+              placeholder="Username"
               addon-left-icon="ni ni-email-83"
             >
             </base-input>
 
             <base-input
-              v-model="model.password"
+              v-model="password"
               form-classes="input-group-alternative mb-3"
               placeholder="Password"
               type="password"
@@ -30,11 +30,11 @@
             >
             </base-input>
 
-            <base-checkbox class="custom-control-alternative">
-              <span class="text-muted">Remember me</span>
-            </base-checkbox>
-            <div class="text-center">
-              <base-button type="primary" class="my-4">Sign in</base-button>
+            <div v-if="error">
+              <span class="error danger">{{ error }}</span>
+            </div>
+            <div class="text-center" @click="login()">
+              <base-button type="primary" class="my-4"> Sign in </base-button>
             </div>
           </form>
         </div>
@@ -48,15 +48,69 @@
   </div>
 </template>
 <script>
+import { URL } from "../helpers/auth";
 export default {
   name: "Login",
   data() {
     return {
-      model: {
-        email: "",
-        password: "",
-      },
+      username: "",
+      password: "",
+      error: null,
     };
+  },
+  methods: {
+    async login() {
+      const data = new FormData();
+      data.append("username", this.username);
+      data.append("password", this.password);
+
+      //const url = "http://localhost:8000/auth/";
+      const url = `${URL}/auth/`;
+
+      await fetch(url, {
+        method: "POST",
+        body: data,
+      })
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error("Network response was not OK");
+          }
+          return response.json();
+        })
+        .then((data) => {
+          localStorage.setItem("token", data.access_token);
+          this.getUserInfo();
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+          this.error = error;
+        });
+    },
+    getUserInfo() {
+      // const url = "http://localhost:8000/user";
+      const url = `${URL}/user/`;
+      const token = localStorage.getItem("token");
+      fetch(url, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+        .then((resp) => {
+          if (!resp.ok) {
+            throw new Error("Not able to get user data");
+          }
+          return resp.json();
+        })
+        .then((data) => {
+          localStorage.setItem("user", JSON.stringify(data));
+          window.location.href = "/";
+        })
+
+        .catch((error) => {
+          this.error = error;
+        });
+    },
   },
 };
 </script>

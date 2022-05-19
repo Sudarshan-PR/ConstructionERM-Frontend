@@ -1,5 +1,6 @@
+/* eslint-disable vue/attribute-hyphenation */
 <template>
-  <div>
+  <div v-if="user">
     <base-header type="gradient-success" class="pb-6 pb-8 pt-5 pt-md-8">
       <div>
         <base-button
@@ -7,21 +8,23 @@
           icon="fa fa-plus"
           @click="showExpenseModal = true"
         >
-          Add Expense
+          Expense
         </base-button>
         <base-button
+          v-if="['admin'].includes(user.role)"
           type="default"
           icon="fa fa-plus"
           @click="showBeneficiaryModal = true"
         >
-          Add Beneficiary
+          Beneficiary
         </base-button>
         <base-button
+          v-if="['admin'].includes(user.role)"
           type="default"
           icon="fa fa-plus"
           @click="showExpenseHeadModal = true"
         >
-          Add Expense Head
+          Expense Head
         </base-button>
       </div>
       <create-expense-modal
@@ -30,11 +33,13 @@
         @click.self="showExpenseModal = false"
       ></create-expense-modal>
       <create-beneficiary-modal
+        v-if="['admin'].includes(user.role)"
         :show-modal="showBeneficiaryModal"
         @close="showBeneficiaryModal = false"
         @click.self="showBeneficiaryModal = false"
       ></create-beneficiary-modal>
       <create-expense-head-modal
+        v-if="['admin'].includes(user.role)"
         :show-modal="showExpenseHeadModal"
         @close="showExpenseHeadModal = false"
         @click.self="showExpenseHeadModal = false"
@@ -58,6 +63,7 @@ import ExpenseTable from "../components/CERMTables/ExpenseTable";
 import CreateExpenseModal from "./Forms/CreateExpense";
 import CreateExpenseHeadModal from "./Forms/CreateExpenseHead";
 import CreateBeneficiaryModal from "./Forms/CreateBeneficiaryModal";
+import { getCurrentUser, authHeader, URL } from "../helpers/auth";
 
 export default {
   name: "Projects",
@@ -75,10 +81,15 @@ export default {
       showExpenseModal: false,
       showExpenseHeadModal: false,
       showBeneficiaryModal: false,
+      user: null,
     };
   },
   mounted() {
-    fetch("http://localhost:8000/project/")
+    this.user = getCurrentUser();
+    fetch(`${URL}/expenses/`, {
+      method: "GET",
+      headers: { ...authHeader() },
+    })
       .then((response) => response.json())
       .then((data) => {
         console.log("Data fetch: ", data);

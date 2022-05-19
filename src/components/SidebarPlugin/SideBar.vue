@@ -38,10 +38,11 @@
               <a class="nav-link" href="#" role="button">
                 <div class="media align-items-center">
                   <span class="avatar avatar-sm rounded-circle">
-                    <img
+                    <i class="ni ni-circle-08"></i>
+                    <!-- <img
                       alt="Image placeholder"
                       src="img/theme/team-1-800x800.jpg"
-                    />
+                    /> -->
                   </span>
                 </div>
               </a>
@@ -67,10 +68,10 @@
               <span>Support</span>
             </router-link>
             <div class="dropdown-divider"></div>
-            <a href="#!" class="dropdown-item">
+            <router-link to="/logout" class="dropdown-item">
               <i class="ni ni-user-run"></i>
               <span>Logout</span>
-            </a>
+            </router-link>
           </base-dropdown>
         </ul>
       </slot>
@@ -101,10 +102,15 @@
         <!--Divider-->
         <hr class="my-3" />
         <!--Heading-->
-        <!-- <h6 class="navbar-heading text-muted">Documentation</h6> -->
+        <h6 class="navbar-heading text-muted">Documentation</h6>
         <!--Navigation-->
-        <!-- <ul class="navbar-nav mb-md-3">
+        <ul class="navbar-nav mb-md-3">
           <li class="nav-item">
+            <router-link to="/logout" class="nav-link">
+              <i class="ni ni-button-power"></i> Logout
+            </router-link>
+          </li>
+          <!-- <li class="nav-item">
             <a
               class="nav-link"
               href="https://demos.creative-tim.com/vue-argon-dashboard/documentation"
@@ -127,8 +133,8 @@
             >
               <i class="ni ni-ui-04"></i> Components
             </a>
-          </li>
-        </ul> -->
+          </li> -->
+        </ul>
       </div>
     </div>
   </nav>

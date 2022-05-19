@@ -1,26 +1,35 @@
 <template>
   <modal :show="showModal">
     <template #header>
-      <h5 id="exampleModalLabel" class="modal-title">Add Expense Head</h5>
+      <h5 id="AttandaceModalLabel" class="modal-title">Update Attendance</h5>
     </template>
     <div class="container">
-      <base-input
-        v-model="head"
-        label="Head Name"
-        placeholder="Head Name"
-      ></base-input>
-    </div>
-    <div class="container">
-      <div v-if="success">{{ success }}</div>
-      <div v-if="error">{{ error }}</div>
-    </div>
+      <base-input v-if="projects.length > 0" label="Select Project">
+        <select v-model="formData.project" class="form-control">
+          <option v-for="v in projects" :key="v.id" :value="v.id">
+            {{ v.name }}
+          </option>
+        </select>
+      </base-input>
 
+      <base-input label="Image with Timestamp and location">
+        <input
+          type="file"
+          class="form-control-file"
+          @change="handleFileUpload($event)"
+        />
+      </base-input>
+      <div class="container">
+        <div v-if="success">{{ success }}</div>
+        <div v-if="error">{{ error }}</div>
+      </div>
+    </div>
     <template #footer>
       <base-button type="secondary" @click="$emit('close')">
         Close
       </base-button>
       <div @click.stop="createHead()">
-        <base-button type="primary"> Create Head </base-button>
+        <base-button type="primary"> Update Attendance </base-button>
       </div>
     </template>
   </modal>
@@ -38,10 +47,24 @@ export default {
   props: ["showModal"],
   data() {
     return {
-      head: null,
+      projects: [],
+      formData: {
+        project: "",
+      },
       success: null,
       error: null,
     };
+  },
+  mounted() {
+    fetch(`${URL}/project/`, {
+      method: "GET",
+      headers: { ...authHeader(), "Content-Type": "multipart/form-data" },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log("Data fetch at modal attandance: ", data);
+        this.projects = data;
+      });
   },
   methods: {
     createHead() {
@@ -59,7 +82,7 @@ export default {
         .then((response) => response.json())
         .then((data) => {
           console.log("Data expense head post: ", data);
-          this.expenseheadlist = data;
+          this.projects = data;
           this.error = null;
           this.success = this.head + " : Head Created";
         })

@@ -1,7 +1,9 @@
 <template>
   <modal :show="showModal">
     <template #header>
-      <h5 id="exampleModalLabel" class="modal-title">Create User</h5>
+      <h5 id="exampleModalLabel" class="modal-title">
+        Expense: {{ expenseId }}
+      </h5>
     </template>
     <div class="container">
       <base-input
@@ -55,7 +57,7 @@ import { authHeader, URL } from "../../helpers/auth";
 
 export default {
   name: "CreateUserModal",
-  props: ["showModal"],
+  props: ["showModal", "expenseId"],
   data() {
     return {
       error: null,
@@ -72,6 +74,9 @@ export default {
         { id: 3, name: "Employee" },
       ],
     };
+  },
+  mounted() {
+    console.log("Update exp mounted : ", this.expenseId);
   },
   methods: {
     createUser() {
