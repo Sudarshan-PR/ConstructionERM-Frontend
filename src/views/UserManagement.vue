@@ -89,7 +89,7 @@ export default {
       })
         .then((response) => response.json())
         .then((data) => {
-          this.all_users = [...data, ...data];
+          this.all_users = data;
           console.log("Got all users: ", this.all_users);
         })
         .catch((err) => {
