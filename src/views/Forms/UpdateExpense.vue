@@ -9,8 +9,12 @@
       <div v-if="!expense.image" class="card text-center bg-danger py-4 mb-3">
         <span class="text-secondary">No image</span>
       </div>
-      <div v-else class="card text-center bg-danger py-4 mb-3">
-        <img :src="expense.image" alt="Expense Image cannot be Loaded" />
+      <div v-else class="card text-center py-4 mb-3">
+        <img
+          :src="expense.image"
+          class="expense-image-intense"
+          alt="Expense Image cannot be Loaded"
+        />
       </div>
       <div class="container mb-4">
         <div class="row">

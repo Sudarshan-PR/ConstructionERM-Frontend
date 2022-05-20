@@ -35,14 +35,10 @@
           </base-dropdown>
           <base-dropdown class="nav-item" position="right">
             <template #title>
-              <a class="nav-link" href="#" role="button">
+              <a class="nav-link" role="button">
                 <div class="media align-items-center">
                   <span class="avatar avatar-sm rounded-circle">
-                    <i class="ni ni-circle-08"></i>
-                    <!-- <img
-                      alt="Image placeholder"
-                      src="img/theme/team-1-800x800.jpg"
-                    /> -->
+                    <img alt="Image placeholder" src="img/avatar_profile.png" />
                   </span>
                 </div>
               </a>

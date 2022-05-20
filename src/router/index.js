@@ -13,6 +13,7 @@ import Register from "../views/Register.vue";
 import Project from "../views/Projects.vue";
 import Expense from "../views/Expense.vue";
 import Users from "../views/UserManagement.vue";
+import UserProfile from "../views/UserProfile.vue";
 
 const routes = [
   {
@@ -42,6 +43,12 @@ const routes = [
         path: "/users",
         name: "Users",
         components: { default: Users },
+        meta: { authorize: ["admin", "supervisor"] },
+      },
+      {
+        path: "/profile",
+        name: "profile",
+        components: { default: UserProfile },
         meta: { authorize: ["admin", "supervisor"] },
       },
     ],
