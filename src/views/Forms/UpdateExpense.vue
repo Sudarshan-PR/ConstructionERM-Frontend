@@ -2,38 +2,47 @@
   <modal :show="showModal">
     <template #header>
       <h5 id="exampleModalLabel" class="modal-title">
-        Expense: {{ expenseId }}
+        Expense: {{ expense.id }}
       </h5>
     </template>
     <div class="container">
-      <base-input
-        v-model="formData.name"
-        label="Name"
-        placeholder="Name"
-        required
-      ></base-input>
-      <base-input
-        label="Whatsapp Phone Number"
-        placeholder="+91"
-        required
-      ></base-input>
-      <base-input v-model="formData.role" label="Role" required>
-        <select class="form-control">
-          <option v-for="role in roles" :key="role.id">
-            {{ role.name }}
+      <div v-if="!expense.image" class="card text-center bg-danger py-4 mb-3">
+        <span class="text-secondary">No image</span>
+      </div>
+      <div v-else class="card text-center bg-danger py-4 mb-3">
+        <img :src="expense.image" alt="Expense Image cannot be Loaded" />
+      </div>
+      <div class="container mb-4">
+        <div class="row">
+          <div class="card col-6 text-center">
+            <h2 class="card-header py-2">Amount</h2>
+            <div class="card-body">
+              {{ expense.total_amount }}
+            </div>
+          </div>
+          <div class="card col-6 text-center">
+            <h2 class="card-header py-2">Balance</h2>
+            <div class="card-body">
+              {{ expense.total_amount - expense.total_paid }}
+            </div>
+          </div>
+        </div>
+      </div>
+      <base-input v-model="formData.project" label="Project" required>
+        <select v-model="formData.project" class="form-control">
+          <option
+            v-for="project in projects"
+            :key="project.id"
+            :value="project.id"
+            :selected="expense.project == project.id ? true : false"
+          >
+            {{ project.name }}
           </option>
         </select>
       </base-input>
       <base-input
-        v-model="formData.password"
-        label="Password"
-        type="password"
-        required
-      ></base-input>
-      <base-input
-        v-model="formData.repassword"
-        label="Re-enter Password"
-        type="password"
+        v-model="formData.current_paid"
+        label="Amount Paid"
         required
       ></base-input>
     </div>
@@ -45,7 +54,7 @@
       <base-button type="secondary" @click="$emit('close')">
         Close
       </base-button>
-      <div @click="createUser()">
+      <div @click="updateExpense()">
         <base-button type="primary">Save changes</base-button>
       </div>
     </template>
@@ -57,37 +66,33 @@ import { authHeader, URL } from "../../helpers/auth";
 
 export default {
   name: "CreateUserModal",
-  props: ["showModal", "expenseId"],
+  props: ["showModal", "expense", "projects"],
   data() {
     return {
       error: null,
       formData: {
-        name: null,
-        role: null,
-        phone: null,
-        password: null,
-        repassword: null,
+        project: null,
+        current_paid: null,
       },
-      roles: [
-        { id: 1, name: "Admin" },
-        { id: 2, name: "Supervisor" },
-        { id: 3, name: "Employee" },
-      ],
     };
   },
   mounted() {
-    console.log("Update exp mounted : ", this.expenseId);
+    console.log("Update exp mounted : ", this.expense);
+    console.log("Update project mounted : ", this.projects);
   },
   methods: {
-    createUser() {
-      if (this.formData.password !== this.formData.repassword) {
-        console.log("Passwords don't match");
-        this.error = "Passwords don't match";
-        return;
+    updateExpense() {
+      const data = { ...this.formData };
+      data.total_amount = this.expense.total_amount;
+      data.total_paid = this.expense.total_paid;
+      if (data.current_paid <= 0) {
+        data.current_paid = null;
+        data.total_paid = this.expense.total_paid;
       }
-      fetch(`${URL}/user`, {
-        method: "POST",
-        body: JSON.stringify(this.formData),
+
+      fetch(`${URL}/expenses/${this.expense.id}`, {
+        method: "PATCH",
+        body: JSON.stringify(data),
         headers: {
           ...authHeader(),
           "Content-Type": "application/json",
@@ -96,7 +101,6 @@ export default {
         .then((response) => response.json())
         .then((data) => {
           console.log("Data expense head post: ", data);
-          this.projects = data;
           this.error = null;
           this.success = this.head + " : Head Created";
         })

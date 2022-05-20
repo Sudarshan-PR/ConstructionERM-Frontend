@@ -67,9 +67,9 @@ export default {
         repassword: null,
       },
       roles: [
-        { id: 1, name: "Admin" },
-        { id: 2, name: "Supervisor" },
-        { id: 3, name: "Employee" },
+        { id: 1, name: "admin" },
+        { id: 2, name: "supervisor" },
+        { id: 3, name: "engineer" },
       ],
     };
   },

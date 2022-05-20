@@ -29,7 +29,6 @@
       <input
         :value="modelValue"
         v-bind="$attrs"
-        v-on="listeners"
         class="form-control"
         :class="[
           { 'is-valid': valid === true },
@@ -37,6 +36,7 @@
           inputClasses,
         ]"
         aria-describedby="addon-right addon-left"
+        v-on="listeners"
       />
     </slot>
     <div v-if="addonRightIcon || $slots.addonRight" class="input-group-append">
@@ -49,10 +49,10 @@
     <slot name="infoBlock"></slot>
     <slot name="helpBlock">
       <div
+        v-if="error"
         class="text-danger invalid-feedback"
         style="display: block"
         :class="{ 'mt-2': hasIcon }"
-        v-if="error"
       >
         {{ error }}
       </div>
@@ -61,8 +61,8 @@
 </template>
 <script>
 export default {
+  name: "BaseInput",
   inheritAttrs: false,
-  name: "base-input",
   props: {
     required: {
       type: Boolean,
@@ -76,34 +76,42 @@ export default {
     label: {
       type: String,
       description: "Input label (text before input)",
+      default: undefined,
     },
     error: {
       type: String,
       description: "Input error (below input)",
+      default: undefined,
     },
     formClasses: {
       type: String,
       description: "Form css classes",
+      default: undefined,
     },
     labelClasses: {
       type: String,
       description: "Input label css classes",
+      default: undefined,
     },
     inputClasses: {
       type: String,
       description: "Input css classes",
+      default: undefined,
     },
     modelValue: {
       type: [String, Number],
       description: "Input value",
+      default: undefined,
     },
     addonRightIcon: {
       type: String,
       description: "Addon right icon",
+      default: undefined,
     },
     addonLeftIcon: {
       type: String,
       description: "Addont left icon",
+      default: undefined,
     },
   },
   data() {

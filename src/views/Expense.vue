@@ -4,6 +4,7 @@
     <base-header type="gradient-success" class="pb-6 pb-8 pt-5 pt-md-8">
       <div>
         <base-button
+          class="my-1"
           type="default"
           icon="fa fa-plus"
           @click="showExpenseModal = true"
@@ -12,6 +13,7 @@
         </base-button>
         <base-button
           v-if="['admin'].includes(user.role)"
+          class="my-1"
           type="default"
           icon="fa fa-plus"
           @click="showBeneficiaryModal = true"
@@ -20,6 +22,7 @@
         </base-button>
         <base-button
           v-if="['admin'].includes(user.role)"
+          class="my-1"
           type="default"
           icon="fa fa-plus"
           @click="showExpenseHeadModal = true"

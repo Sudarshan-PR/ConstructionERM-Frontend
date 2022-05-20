@@ -1,8 +1,10 @@
 <template>
   <div class="card shadow" :class="type === 'dark' ? 'bg-default' : ''">
     <update-expense-modal
+      v-if="updateExpenseModal.show && projects"
       :show-modal="updateExpenseModal.show"
-      :expense-id="updateExpenseModal.id"
+      :expense="updateExpenseModal.item"
+      :projects="projects"
       @close="updateExpenseModal.show = false"
       @click.self="updateExpenseModal.show = false"
     ></update-expense-modal>
@@ -43,7 +45,7 @@
         </template>
 
         <template #default="row">
-          <th scope="row" @click="showUpdateExpenseModal(row.item.id)">
+          <th scope="row" @click="showUpdateExpenseModal(row.item)">
             <div
               class="media align-items-center"
               :class="{ 'text-danger': !row.item.image }"
@@ -59,7 +61,7 @@
           </th>
           <td class="username">{{ row.item.user_name.toUpperCase() }}</td>
           <td class="Total Amount">₹ {{ row.item.total_amount }}</td>
-          <td class="vendor">{{ row.item.vendor }}</td>
+          <td class="vendor">{{ vendors[row.item.vendor] }}</td>
           <td>
             <span class="date">{{
               `${new Date(row.item.date).getUTCDate()} - ${new Date(
@@ -149,11 +151,13 @@ export default {
   props: ["type"],
   data() {
     return {
+      vendors: {},
       updateExpenseModal: {
         show: false,
-        id: null,
+        item: null,
       },
       tableData: null,
+      projects: null,
       statusType: {
         Paid: "success",
         Outstanding: "danger",
@@ -162,10 +166,13 @@ export default {
   },
   mounted() {
     this.getExpenses();
+    this.getProjects();
+    this.getVendors();
   },
   methods: {
-    showUpdateExpenseModal(id) {
-      this.updateExpenseModal.id = id;
+    showUpdateExpenseModal(item) {
+      console.log("Item opened: ", item);
+      this.updateExpenseModal.item = item;
       this.updateExpenseModal.show = true;
     },
     getExpenses() {
@@ -186,6 +193,31 @@ export default {
           console.log("Data fetch Expense: ", data);
           this.tableData = data;
         });
+    },
+    getProjects() {
+      fetch(`${URL}/project/`, {
+        method: "GET",
+        headers: { ...authHeader(), "Content-Type": "multipart/form-data" },
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          console.log("Data fetch at modal: ", data);
+          this.projects = data;
+        });
+    },
+    getVendors() {
+      fetch(`${URL}/vendors/`, {
+        method: "GET",
+        headers: { ...authHeader() },
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          console.log("Data expense head fetch: ", data);
+          data.map((i) => {
+            this.vendors[i.id] = i.name;
+          });
+        });
+      console.log("Fetched: ", this.projects);
     },
   },
 };
