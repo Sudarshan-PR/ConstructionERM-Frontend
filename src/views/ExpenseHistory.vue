@@ -5,17 +5,35 @@
     </base-header>
 
     <div class="container-fluid mt--8">
-      <div class="row">
-        <div class="col">
-          <div v-if="expenses.length > 0">
-            <div class="card w-50">
-              <div class="card-body">
-                <h5 class="card-title">Card title</h5>
-                <p class="card-text">
-                  With supporting text below as a natural lead-in to additional
-                  content.
-                </p>
-                <a href="#" class="btn btn-primary">Button</a>
+      <div v-if="expenses.length > 0" class="row">
+        <div v-for="expense in expenses" :key="expense.id" class="col-3">
+          <div class="card">
+            <div class="card-body">
+              <h2 class="card-title">{{ expense.title }}</h2>
+              <div class="card-subtitle">
+                {{ vendors[expense.vendor] }} <br />
+                {{ getDateTime(expense.date) }}
+              </div>
+              <p class="card-text">
+                <br />
+                Amount Paid:
+                <span class="text-default">
+                  <b>{{ expense.current_paid }}</b>
+                </span>
+                <br />
+                Balance:
+                <span class="text-default">
+                  <b> -{{ expense.total_amount - expense.total_paid }}</b>
+                </span>
+                <br />
+                <span>
+                  Raised By: <b>{{ expense.user_name.toUpperCase() }}</b>
+                </span>
+              </p>
+              <div
+                class="card-footer px-0 d-flex justify-content-between align-items-center"
+              >
+                <badge pill type="primary">Primary</badge>
               </div>
             </div>
           </div>
@@ -30,9 +48,9 @@ import { getCurrentUser, authHeader, URL } from "../helpers/auth";
 
 export default {
   name: "Projects",
-  components: {},
   data() {
     return {
+      vendors: {},
       createProjectModal: false,
       date: new Date(),
       expenses: [],
@@ -44,6 +62,7 @@ export default {
   },
   mounted() {
     this.user = getCurrentUser();
+    this.getVendors();
     fetch(`${URL}/expense-logs/`, {
       method: "GET",
       headers: { ...authHeader() },
@@ -55,6 +74,32 @@ export default {
       });
 
     console.log("Fetched: ", this.expenses);
+  },
+  methods: {
+    getDateTime(val) {
+      const date = new Date(val);
+      const day = ("0" + date.getUTCDate()).slice(-2);
+      const month = ("0" + date.getMonth()).slice(-2);
+      const year = date.getFullYear();
+      const hours = ("0" + (date.getHours() - 12)).slice(-2);
+      const mins = ("0" + date.getMinutes()).slice(-2);
+      const period = hours > 12 ? "PM" : "AM";
+      return `${day}-${month}-${year} ${hours}:${mins} ${period}`;
+    },
+    getVendors() {
+      fetch(`${URL}/vendors/`, {
+        method: "GET",
+        headers: { ...authHeader() },
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          console.log("Data expense head fetch: ", data);
+          data.map((i) => {
+            this.vendors[i.id] = i.name;
+          });
+        });
+      console.log("Fetched: ", this.projects);
+    },
   },
 };
 </script>
