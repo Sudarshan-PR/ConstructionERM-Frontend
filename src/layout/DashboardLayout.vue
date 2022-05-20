@@ -30,6 +30,13 @@
           }"
         />
         <sidebar-item
+          :link="{
+            name: 'Expense Logs',
+            icon: 'ni ni-time-alarm text-warning',
+            path: '/expense-logs',
+          }"
+        />
+        <sidebar-item
           v-if="['admin'].includes(user.role)"
           :link="{
             name: 'User Management',

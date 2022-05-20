@@ -63,11 +63,7 @@
           <td class="Total Amount">₹ {{ row.item.total_amount }}</td>
           <td class="vendor">{{ vendors[row.item.vendor] }}</td>
           <td>
-            <span class="date">{{
-              `${new Date(row.item.date).getUTCDate()} - ${new Date(
-                row.item.date
-              ).getMonth()} - ${new Date(row.item.date).getFullYear()}`
-            }}</span>
+            <span class="date">{{ getDateTime(row.item.date) }}</span>
           </td>
           <td class="head">{{ row.item.head }}</td>
           <td>
@@ -170,6 +166,16 @@ export default {
     this.getVendors();
   },
   methods: {
+    getDateTime(val) {
+      const date = new Date(val);
+      const day = date.getUTCDate();
+      const month = date.getMonth();
+      const year = date.getFullYear();
+      const hours = date.getHours() - 12;
+      const mins = date.getMinutes();
+      const period = hours > 12 ? "PM" : "AM";
+      return `${day}-${month}-${year} ${hours}:${mins} ${period}`;
+    },
     showUpdateExpenseModal(item) {
       console.log("Item opened: ", item);
       this.updateExpenseModal.item = item;

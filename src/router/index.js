@@ -12,6 +12,7 @@ import Register from "../views/Register.vue";
 
 import Project from "../views/Projects.vue";
 import Expense from "../views/Expense.vue";
+import ExpenseHistory from "../views/ExpenseHistory.vue";
 import Users from "../views/UserManagement.vue";
 import UserProfile from "../views/UserProfile.vue";
 
@@ -38,6 +39,12 @@ const routes = [
         name: "Expenses",
         components: { default: Expense },
         meta: { authorize: ["admin", "supervisor", "site-incharge"] },
+      },
+      {
+        path: "/expense-logs",
+        name: "Expense Logs",
+        components: { default: ExpenseHistory },
+        meta: { authorize: ["admin", "supervisor"] },
       },
       {
         path: "/users",

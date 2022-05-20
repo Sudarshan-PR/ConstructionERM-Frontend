@@ -11,13 +11,14 @@
         required
       ></base-input>
       <base-input
+        v-model="formData.phone"
         label="Whatsapp Phone Number"
         placeholder="+91"
         required
       ></base-input>
       <base-input v-model="formData.role" label="Role" required>
-        <select class="form-control">
-          <option v-for="role in roles" :key="role.id">
+        <select v-model="formData.role" class="form-control">
+          <option v-for="role in roles" :key="role.id" :value="role.name">
             {{ role.name }}
           </option>
         </select>
@@ -80,6 +81,7 @@ export default {
         this.error = "Passwords don't match";
         return;
       }
+      console.log("User data: ", this.formData);
       fetch(`${URL}/user`, {
         method: "POST",
         body: JSON.stringify(this.formData),
