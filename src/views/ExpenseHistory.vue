@@ -6,7 +6,11 @@
 
     <div class="container-fluid mt--8">
       <div v-if="expenses.length > 0" class="row">
-        <div v-for="expense in expenses" :key="expense.id" class="col-3">
+        <div
+          v-for="expense in expenses"
+          :key="expense.id"
+          class="col-lg-3 col-xl-3 my-2"
+        >
           <div class="card">
             <div class="card-body">
               <h2 class="card-title">{{ expense.title }}</h2>

@@ -45,7 +45,9 @@
             </template>
 
             <div class="dropdown-header noti-title">
-              <h6 class="text-overflow m-0">Welcome!</h6>
+              <h6 v-if="user" class="text-overflow m-0">
+                Welcome! {{ user.name }}
+              </h6>
             </div>
             <router-link to="/profile" class="dropdown-item">
               <i class="ni ni-single-02"></i>
@@ -137,9 +139,11 @@
 </template>
 <script>
 import NavbarToggleButton from "@/components/NavbarToggleButton";
+import { getCurrentUser } from "../../helpers/auth";
 
 export default {
   name: "Sidebar",
+  user: null,
   components: {
     NavbarToggleButton,
   },
@@ -160,6 +164,9 @@ export default {
       description:
         "Whether sidebar should autoclose on mobile when clicking an item",
     },
+  },
+  mounted() {
+    this.user = getCurrentUser();
   },
   beforeUnmount() {
     if (this.$sidebar.showSidebar) {
