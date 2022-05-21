@@ -19,6 +19,11 @@ export const authHeader = () => {
   };
 };
 
-export const URL = "https://construction-erm.herokuapp.com";
-// export const URL = "http://192.168.1.34:8000";
-// export const URL = "http://localhost:8000";
+const getURL = () => {
+  if (process.env.DEV_ENV === "LOCAL_DEV") {
+    return "http://localhost:8000";
+  }
+  return "https://construction-erm.herokuapp.com";
+};
+
+export const URL = getURL();
