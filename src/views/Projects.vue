@@ -18,6 +18,7 @@
       </base-button>
       <modal
         :show="createProjectModal"
+        style="overflow: auto"
         @close="createProjectModal = false"
         @click.self="createProjectModal = false"
       >

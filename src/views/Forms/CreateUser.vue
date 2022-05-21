@@ -1,5 +1,5 @@
 <template>
-  <modal :show="showModal">
+  <modal :show="showModal" style="overflow: auto">
     <template #header>
       <h5 id="exampleModalLabel" class="modal-title">Create User</h5>
     </template>
