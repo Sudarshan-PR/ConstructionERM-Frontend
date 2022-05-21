@@ -20,7 +20,8 @@ export const authHeader = () => {
 };
 
 const getURL = () => {
-  if (process.env.DEV_ENV === "LOCAL_DEV") {
+  console.log("ENV: var", process.env.VUE_APP_DEV_ENV);
+  if (process.env.VUE_APP_DEV_ENV === "local_dev") {
     return "http://localhost:8000";
   }
   return "https://construction-erm.herokuapp.com";
