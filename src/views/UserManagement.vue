@@ -29,39 +29,49 @@
         @close="showAttendanceModal = false"
         @click.self="showAttendanceModal = false"
       ></update-attendance-modal>
+      <attendance-details-modal
+        v-if="attendanceDetailsModal.show"
+        :show-modal="attendanceDetailsModal.show"
+        :user="attendanceDetailsModal.user"
+        @close="attendanceDetailsModal.show = false"
+        @click.self="attendanceDetailsModal.show = false"
+      >
+      </attendance-details-modal>
     </base-header>
     <div v-if="all_users" class="container-fluid mt--7">
       <div class="row">
         <div v-for="user in all_users" :key="user.id">
           <div class="col my-3">
-            <router-link to="/profile">
-              <div class="card" style="width: 18rem">
-                <img
-                  class="card-img-top"
-                  src="../../public/img/avatar_admin.png"
-                  alt="Card image cap"
-                />
-                <div class="card-body">
-                  <h5 class="card-title">{{ user.name.toUpperCase() }}</h5>
+            <!-- <router-link to="/profile"> -->
+            <div
+              class="card"
+              role="button"
+              style="width: 18rem"
+              @click="showAttendanceDetailsModal(user.id)"
+            >
+              <img
+                class="card-img-top"
+                src="../../public/img/avatar_admin.png"
+                alt="Card image cap"
+              />
+              <div class="card-body">
+                <h5 class="card-title">{{ user.name.toUpperCase() }}</h5>
+                <div class="card-text">
                   <div
                     v-for="att in attendance[user.id]"
                     :key="att.id"
-                    class="card-text"
+                    class="bg-info my-1 p-1"
                   >
-                    <div class="bg-info my-0.5 p-1">
-                      <b>Marked At:</b> {{ getTime(att.date) }} <br />
-                      <b>Loc</b>: {{ att.loc }}
-                    </div>
-                  </div>
-                  <div
-                    v-if="!attendance[user.id]"
-                    class="card-text text-danger"
-                  >
-                    No attendance marked today
+                    <b>Marked At:</b> {{ getTime(att.date) }} <br />
+                    <b>Loc</b>: {{ att.loc }}
                   </div>
                 </div>
+                <div v-if="!attendance[user.id]" class="card-text text-danger">
+                  No attendance marked today
+                </div>
               </div>
-            </router-link>
+            </div>
+            <!-- </router-link> -->
           </div>
         </div>
       </div>
@@ -72,6 +82,7 @@
 <script>
 import CreateUserModal from "./Forms/CreateUser";
 import UpdateAttendanceModal from "./Forms/Attendance";
+import AttendanceDetailsModal from "./AttendanceModal.vue";
 
 import { authHeader, getCurrentUser, URL } from "../helpers/auth";
 
@@ -80,6 +91,7 @@ export default {
   components: {
     CreateUserModal,
     UpdateAttendanceModal,
+    AttendanceDetailsModal,
   },
   data() {
     return {
@@ -87,6 +99,10 @@ export default {
       attendance: [],
       showCreateUserModal: false,
       showAttendanceModal: false,
+      attendanceDetailsModal: {
+        show: false,
+        user: null,
+      },
       projects: [],
     };
   },
@@ -95,6 +111,10 @@ export default {
     this.getAllUsers();
   },
   methods: {
+    showAttendanceDetailsModal(user) {
+      this.attendanceDetailsModal.show = true;
+      this.attendanceDetailsModal.user = user;
+    },
     getTime(val) {
       const date = new Date(val);
       let hours = date.getHours();
@@ -113,7 +133,7 @@ export default {
       })
         .then((response) => response.json())
         .then((data) => {
-          this.attendance[id] = data;
+          this.attendance[id] = data.length > 0 ? data : null;
           console.log("Got attendance: ", this.attendance.id);
         })
         .catch((err) => {
