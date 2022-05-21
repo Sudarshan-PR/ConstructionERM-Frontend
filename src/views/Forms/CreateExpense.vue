@@ -78,6 +78,10 @@
         />
       </base-input>
     </div>
+    <div class="container">
+      <div v-if="success" class="text-success">{{ success }}</div>
+      <div v-if="error" class="text-danger">{{ error }}</div>
+    </div>
 
     <template #footer>
       <base-button type="secondary" @click="$emit('close')">
@@ -194,11 +198,17 @@ export default {
           ...authHeader(),
         },
       })
-        .then((response) => response.json())
+        .then((response) => {
+          if (response.ok) {
+            return response.json();
+          }
+          return Promise.reject(response);
+        })
         .then((data) => {
           console.log("Data expense head post: ", data);
           this.error = null;
-          this.success = this.head + " : Head Created";
+          this.success = "Expense Created.";
+          this.$emit("expenseUpdate");
         })
         .catch((err) => {
           this.success = null;

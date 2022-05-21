@@ -171,9 +171,10 @@ export default {
       const day = date.getUTCDate();
       const month = date.getMonth();
       const year = date.getFullYear();
-      const hours = date.getHours() - 12;
+      let hours = date.getHours();
+      hours = hours > 12 ? hours - 12 : hours;
       const mins = date.getMinutes();
-      const period = hours > 12 ? "PM" : "AM";
+      const period = hours >= 12 ? "PM" : "AM";
       return `${day}-${month}-${year} ${hours}:${mins} ${period}`;
     },
     showUpdateExpenseModal(item) {

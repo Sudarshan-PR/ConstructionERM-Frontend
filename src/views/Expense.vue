@@ -34,6 +34,7 @@
         :show-modal="showExpenseModal"
         @close="showExpenseModal = false"
         @click.self="showExpenseModal = false"
+        @expense-update="getExpenses()"
       ></create-expense-modal>
       <create-beneficiary-modal
         v-if="['admin'].includes(user.role)"
@@ -89,17 +90,22 @@ export default {
   },
   mounted() {
     this.user = getCurrentUser();
-    fetch(`${URL}/expenses/`, {
-      method: "GET",
-      headers: { ...authHeader() },
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log("Data fetch: ", data);
-        this.projects = data;
-      });
+    this.getExpenses();
+  },
+  methods: {
+    getExpenses() {
+      fetch(`${URL}/expenses/`, {
+        method: "GET",
+        headers: { ...authHeader() },
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          console.log("Data fetch: ", data);
+          this.projects = data;
+        });
 
-    console.log("Fetched: ", this.projects);
+      console.log("Fetched: ", this.projects);
+    },
   },
 };
 </script>

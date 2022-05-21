@@ -26,10 +26,10 @@
       </navbar-toggle-button>
 
       <div
-        class="collapse navbar-collapse"
-        :class="{ show: toggled }"
         :id="contentId"
         v-click-outside="closeMenu"
+        class="collapse navbar-collapse"
+        :class="{ show: toggled }"
       >
         <slot :close-menu="closeMenu"></slot>
       </div>
@@ -40,7 +40,7 @@
 import NavbarToggleButton from "./NavbarToggleButton";
 
 export default {
-  name: "base-nav",
+  name: "BaseNav",
   components: {
     NavbarToggleButton,
   },

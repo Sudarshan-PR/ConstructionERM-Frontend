@@ -28,7 +28,7 @@
       <base-button type="secondary" @click="$emit('close')">
         Close
       </base-button>
-      <div @click.stop="createHead()">
+      <div @click.stop="getLocationAndSubmit()">
         <base-button type="primary"> Update Attendance </base-button>
       </div>
     </template>
@@ -47,9 +47,11 @@ export default {
   props: ["showModal"],
   data() {
     return {
+      loc: {},
       projects: [],
       formData: {
         project: "",
+        image: null,
       },
       success: null,
       error: null,
@@ -65,26 +67,52 @@ export default {
         console.log("Data fetch at modal attandance: ", data);
         this.projects = data;
       });
+    // this.getLocation();
   },
   methods: {
-    createHead() {
-      const data = {
-        head: this.head,
+    handleFileUpload(e) {
+      console.log("Image uploading");
+      this.formData.image = e.target.files[0];
+      console.log("Image uploaded done: ", this.formData.image);
+    },
+    updateLocationAndSubmit(loc) {
+      console.log("Location update: ", loc);
+      this.loc = {
+        lat: loc.coords.latitude,
+        lon: loc.coords.longitude,
       };
-      fetch(`${URL}/expense-heads`, {
+      this.createAttendance();
+    },
+    getLocationAndSubmit() {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(this.updateLocationAndSubmit);
+      } else {
+        alert("Geolocation is not supported by this browser.");
+      }
+    },
+    createAttendance() {
+      const data = new FormData();
+      const formdata = { ...this.formData };
+
+      Object.entries(formdata).forEach(([key, value]) => {
+        data.append(key, value);
+      });
+      data.append("loc", JSON.stringify(this.loc));
+
+      console.log("loc: ", this.loc);
+      fetch(`${URL}/attendance`, {
         method: "POST",
-        body: JSON.stringify(data),
+        body: data,
         headers: {
           ...authHeader(),
-          "Content-Type": "application/json",
         },
       })
         .then((response) => response.json())
         .then((data) => {
-          console.log("Data expense head post: ", data);
+          console.log("Data attendance: ", data);
           this.projects = data;
           this.error = null;
-          this.success = this.head + " : Head Created";
+          this.success = "Attendance Updated";
         })
         .catch((err) => {
           this.success = null;
