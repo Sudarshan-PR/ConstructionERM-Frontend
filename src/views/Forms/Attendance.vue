@@ -1,5 +1,5 @@
 <template>
-  <modal :show="showModal">
+  <modal :show="showModal" style="overflow: auto">
     <template #header>
       <h5 id="AttandaceModalLabel" class="modal-title">Update Attendance</h5>
     </template>

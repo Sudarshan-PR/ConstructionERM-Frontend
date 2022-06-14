@@ -1,5 +1,5 @@
 <template>
-  <Modal :show="showModal">
+  <Modal :show="showModal" style="overflow: auto">
     <template #header>
       <h5 id="exampleModalLabel" class="modal-title">Add Expense</h5>
     </template>
