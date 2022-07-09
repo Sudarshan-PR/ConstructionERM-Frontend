@@ -15,6 +15,7 @@ import Expense from "../views/Expense.vue";
 import ExpenseHistory from "../views/ExpenseHistory.vue";
 import Users from "../views/UserManagement.vue";
 import UserProfile from "../views/UserProfile.vue";
+import Material from "../views/Material.vue";
 
 const routes = [
   {
@@ -50,6 +51,12 @@ const routes = [
         path: "/users",
         name: "Users",
         components: { default: Users },
+        meta: { authorize: ["admin", "supervisor"] },
+      },
+      {
+        path: "/material",
+        name: "material",
+        components: { default: Material },
         meta: { authorize: ["admin", "supervisor"] },
       },
       {

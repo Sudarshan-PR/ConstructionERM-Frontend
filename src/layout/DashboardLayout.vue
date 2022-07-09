@@ -44,6 +44,14 @@
             path: '/users',
           }"
         />
+        <sidebar-item
+          v-if="['admin', 'supervisor'].includes(user.role)"
+          :link="{
+            name: 'Material',
+            icon: 'ni ni-single-02',
+            path: '/material',
+          }"
+        />
         <!-- <sidebar-item
           :link="{
             name: 'Icons',

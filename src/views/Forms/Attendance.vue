@@ -113,6 +113,7 @@ export default {
           this.projects = data;
           this.error = null;
           this.success = "Attendance Updated";
+          this.$emit("close");
         })
         .catch((err) => {
           this.success = null;

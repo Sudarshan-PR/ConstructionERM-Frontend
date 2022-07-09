@@ -1,7 +1,7 @@
 <template>
   <Modal :show="showModal" style="overflow: auto">
     <template #header>
-      <h5 id="exampleModalLabel" class="modal-title">Add Expense</h5>
+      <h5 id="exampleModalLabel" class="modal-title">Material Procured</h5>
     </template>
     <div class="container">
       <base-input
@@ -21,6 +21,17 @@
         </select>
       </base-input>
       <base-input
+        v-if="catogaryList.length > 0"
+        v-model="formdata.catogary"
+        label="Catogary"
+      >
+        <select v-model="formdata.catogary" class="form-control">
+          <option v-for="v in catogaryList" :key="v.id" :value="v.id">
+            {{ v.name }}
+          </option>
+        </select>
+      </base-input>
+      <base-input
         v-if="vendorsList.length > 0"
         v-model="formdata.vendor"
         label="Vendor"
@@ -31,46 +42,46 @@
           </option>
         </select>
       </base-input>
-      <base-input v-if="expenseheadlist.length > 0" label="Expense Type">
-        <select v-model="formdata.head" class="form-control">
-          <option
-            v-for="expensehead in expenseheadlist"
-            :key="expensehead.id"
-            :value="expensehead.head"
-          >
-            {{ expensehead.head }}
-          </option>
-        </select>
-      </base-input>
       <base-input
         v-model="formdata.total_amount"
         label="Amount"
         placeholder="Amount (in Rupees)"
       ></base-input>
+      <base-input
+        v-model="formdata.quantity"
+        label="Quantity"
+        placeholder="in KG"
+      ></base-input>
       <base-radio
-        value="full-paid"
+        value="nwb"
         class="mb-3"
         inline
         checked
-        name="payRadio"
-        @input="(e) => (formdata.paymentRadio = 'full-paid')"
+        name="typeRadio"
+        @input="(e) => (formdata.type = 'nwb')"
       >
-        Fully Paid
+        Not Weigh Bridge
       </base-radio>
       <base-radio
-        value="partially-paid"
-        name="payRadio"
+        value="wb"
+        name="typeRadio"
         class="mb-3"
         inline
-        @input="(e) => (formdata.paymentRadio = 'partially-paid')"
+        @input="(e) => (formdata.type = 'wb')"
       >
-        Partially Paid
+        Weigh Bridge
       </base-radio>
       <base-input
-        v-if="formdata.paymentRadio === 'partially-paid'"
-        v-model="formdata.total_paid"
-        label="Partially Paid Amount"
-        placeholder="Amount (in Rupees)"
+        v-if="formdata.type === 'wb'"
+        v-model="formdata.weight_trip1"
+        label="Weight Trip 1"
+        placeholder="in KG"
+      ></base-input>
+      <base-input
+        v-if="formdata.type === 'wb'"
+        v-model="formdata.weight_trip2"
+        label="Weight Trip 2"
+        placeholder="in KG"
       ></base-input>
       <base-input label="Description">
         <textarea
@@ -99,7 +110,7 @@
         Close
       </base-button>
       <div @click="submit()">
-        <base-button type="primary">Add Expense</base-button>
+        <base-button type="primary">Submit</base-button>
       </div>
     </template>
   </Modal>
@@ -123,19 +134,23 @@ export default {
     return {
       createProjectModal: false,
       formdata: {
-        paymentRadio: "partially-paid",
+        type: "nwb",
         title: null,
         head: null,
-        vendor: "",
+        catogary: "",
+        weight_trip1: null,
+        weight_trip2: null,
         image: null,
         project: null,
         total_amount: null,
         total_paid: null,
+        vendor: null,
         disc: "",
       },
       projects: [],
       expenseheadlist: [],
       vendorsList: [],
+      catogaryList: [],
       error: null,
       success: null,
 
@@ -180,19 +195,22 @@ export default {
         console.log("Data expense head fetch: ", data);
         this.vendorsList = data;
       });
-    console.log("Fetched: ", this.vendorsList);
+
+    fetch(`${URL}/material/catogary`, {
+      method: "GET",
+      headers: { ...authHeader() },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log("Data expense head fetch: ", data);
+        this.catogaryList = data;
+      });
+    console.log("Fetched: ", this.catogaryList);
   },
   methods: {
     submit() {
       const data = new FormData();
       const formdata = { ...this.formdata };
-
-      if (formdata.paymentRadio === "full-paid") {
-        formdata.fully_paid = true;
-        formdata.total_paid = formdata.total_amount;
-      } else {
-        formdata.fully_paid = false;
-      }
 
       console.log(formdata);
       if (!formdata.image) {
@@ -203,7 +221,7 @@ export default {
         data.append(key, value);
       });
 
-      fetch(`${URL}/expenses`, {
+      fetch(`${URL}/material/procured`, {
         method: "POST",
         body: data,
         headers: {
@@ -221,6 +239,7 @@ export default {
           this.error = null;
           this.success = "Expense Created.";
           this.$emit("expenseUpdate");
+          this.$emit("close");
         })
         .catch((err) => {
           this.success = null;

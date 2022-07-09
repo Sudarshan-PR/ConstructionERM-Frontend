@@ -60,6 +60,7 @@ export default {
           this.expenseheadlist = data;
           this.error = null;
           this.success = this.head + " : Head Created";
+          this.$emit("close");
         })
         .catch((err) => {
           this.success = null;
