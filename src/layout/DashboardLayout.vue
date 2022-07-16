@@ -30,6 +30,7 @@
           }"
         />
         <sidebar-item
+          v-if="['admin'].includes(user.role)"
           :link="{
             name: 'Expense Logs',
             icon: 'ni ni-time-alarm text-warning',
@@ -45,11 +46,17 @@
           }"
         />
         <sidebar-item
-          v-if="['admin', 'supervisor'].includes(user.role)"
           :link="{
             name: 'Material',
-            icon: 'ni ni-single-02',
+            icon: 'fas fa-boxes',
             path: '/material',
+          }"
+        />
+        <sidebar-item
+          :link="{
+            name: 'Machinery',
+            icon: 'fas fa-truck-monster',
+            path: '/machinery',
           }"
         />
         <!-- <sidebar-item

@@ -16,6 +16,8 @@ import ExpenseHistory from "../views/ExpenseHistory.vue";
 import Users from "../views/UserManagement.vue";
 import UserProfile from "../views/UserProfile.vue";
 import Material from "../views/Material.vue";
+import MaterialLogs from "../views/MaterialLogs.vue";
+import Machinery from "../views/Machinery.vue";
 
 const routes = [
   {
@@ -57,6 +59,18 @@ const routes = [
         path: "/material",
         name: "material",
         components: { default: Material },
+        meta: { authorize: ["admin", "supervisor"] },
+      },
+      {
+        path: "/material-logs",
+        name: "material logs",
+        components: { default: MaterialLogs },
+        meta: { authorize: ["admin", "supervisor"] },
+      },
+      {
+        path: "/machinery",
+        name: "Machinery",
+        components: { default: Machinery },
         meta: { authorize: ["admin", "supervisor"] },
       },
       {

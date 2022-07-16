@@ -72,6 +72,11 @@
     <div class="container-fluid mt--7">
       <!--Charts-->
       <div class="row">
+        <div class="col-12">
+          <notice-board></notice-board>
+        </div>
+      </div>
+      <div class="mt-5 row">
         <div class="col-xl-8 mb-5 mb-xl-0">
           <card type="default" header-classes="bg-transparent">
             <template #header>
@@ -155,11 +160,13 @@ import { authHeader, getCurrentUser, URL } from "../helpers/auth";
 
 import PageVisitsTable from "./Dashboard/PageVisitsTable";
 import SocialTrafficTable from "./Dashboard/SocialTrafficTable";
+import NoticeBoard from "@/components/NoticeBoard/NoticeBoard";
 let chart;
 
 export default {
   components: {
     PageVisitsTable,
+    NoticeBoard,
     SocialTrafficTable,
   },
   data() {

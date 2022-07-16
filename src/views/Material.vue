@@ -20,12 +20,21 @@
           Consumed
         </base-button>
         <base-button
+          v-if="['admin'].includes(user.role)"
           class="my-1"
           type="default"
           icon="fa fa-plus"
           @click="showCatogaryModal = true"
         >
           Category
+        </base-button>
+        <base-button
+          v-if="['admin'].includes(user.role)"
+          class="my-1"
+          type="default"
+          icon="fas fa-history"
+        >
+          <router-link class="my-1" to="/material-logs"> Logs </router-link>
         </base-button>
       </div>
       <Procurement
@@ -34,6 +43,12 @@
         @click.self="showProcurementModal = false"
         @expense-update="getExpenses()"
       ></Procurement>
+      <MaterialConsumption
+        :show-modal="showConsumedModal"
+        @close="showConsumedModal = false"
+        @click.self="showConsumedModal = false"
+        @expense-update="getExpenses()"
+      ></MaterialConsumption>
       <material-catogary
         :show-modal="showCatogaryModal"
         @close="showCatogaryModal = false"
@@ -59,6 +74,7 @@ import ExpenseTable from "../components/CERMTables/ExpenseTable";
 import Procurement from "./Forms/Procurement";
 import MaterialCatogary from "./Forms/MaterialCatogary";
 import { getCurrentUser, authHeader, URL } from "../helpers/auth";
+import MaterialConsumption from "./Forms/MaterialConsumption.vue";
 
 export default {
   name: "Projects",
@@ -66,6 +82,7 @@ export default {
     ExpenseTable,
     MaterialCatogary,
     Procurement,
+    MaterialConsumption,
   },
   data() {
     return {

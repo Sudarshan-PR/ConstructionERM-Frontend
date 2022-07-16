@@ -18,8 +18,8 @@
       </base-button>
       <create-project-form
         :show="createProjectModal"
-        @close="show = false"
-        @click.self="show = false"
+        @close="createProjectModal = false"
+        @click.self="createProjectModal = false"
       ></create-project-form>
       <modal
         :show="updateProjectModal"

@@ -1,14 +1,9 @@
 <template>
   <Modal :show="showModal" style="overflow: auto">
     <template #header>
-      <h5 id="exampleModalLabel" class="modal-title">Material Procured</h5>
+      <h5 id="exampleModalLabel" class="modal-title">Material Consumed</h5>
     </template>
     <div class="container">
-      <base-input
-        v-model="formdata.title"
-        label="Title"
-        placeholder="Title"
-      ></base-input>
       <base-input
         v-if="projects.length > 0"
         v-model="formdata.project"
@@ -32,66 +27,10 @@
         </select>
       </base-input>
       <base-input
-        v-if="vendorsList.length > 0"
-        v-model="formdata.vendor"
-        label="Vendor"
-      >
-        <select v-model="formdata.vendor" class="form-control">
-          <option v-for="v in vendorsList" :key="v.id" :value="v.id">
-            {{ v.name }}
-          </option>
-        </select>
-      </base-input>
-      <base-input
-        v-model.number="formdata.total_amount"
-        label="Amount"
-        placeholder="Amount (in Rupees)"
-      ></base-input>
-      <base-input
         v-model.number="formdata.quantity"
         label="Quantity"
         placeholder="in KG"
       ></base-input>
-      <base-radio
-        value="nwb"
-        class="mb-3"
-        inline
-        name="typeRadio"
-        checked
-        @input="(e) => (formdata.type = 'nwb')"
-      >
-        Not Weigh Bridge
-      </base-radio>
-      <base-radio
-        value="wb"
-        name="typeRadio"
-        class="mb-3"
-        inline
-        @input="(e) => (formdata.type = 'wb')"
-      >
-        Weigh Bridge
-      </base-radio>
-      <base-input
-        v-if="formdata.type === 'wb'"
-        v-model.number="formdata.gross_weight"
-        label="Gross Weight"
-        placeholder="in KG"
-      ></base-input>
-      <base-input
-        v-if="formdata.type === 'wb'"
-        v-model.number="formdata.net_weight"
-        label="Net Weight"
-        placeholder="in KG"
-      ></base-input>
-      <base-input label="Description">
-        <textarea
-          id="desc"
-          v-model="formdata.disc"
-          placeholder="Describe your project"
-          class="form-control"
-          rows="6"
-        ></textarea>
-      </base-input>
       <base-input label="Image">
         <input
           type="file"
@@ -118,7 +57,6 @@
 
 <script>
 import Modal from "../../components/Modal";
-import BaseRadio from "../../components/BaseRadio.vue";
 import BaseInput from "../../components/BaseInput.vue";
 import { authHeader, URL } from "../../helpers/auth";
 
@@ -126,7 +64,6 @@ export default {
   name: "CreateExpenseModal",
   components: {
     Modal,
-    BaseRadio,
     BaseInput,
   },
   props: ["showModal"],
@@ -134,18 +71,10 @@ export default {
     return {
       createProjectModal: false,
       formdata: {
-        type: "nwb",
-        title: null,
-        head: null,
         catogary: "",
-        net_weight: 0,
-        gross_weight: 0,
-        image: null,
-        project: null,
-        total_amount: null,
-        total_paid: null,
-        vendor: null,
+        quantity: null,
         disc: "",
+        image: null,
       },
       projects: [],
       expenseheadlist: [],
@@ -153,14 +82,6 @@ export default {
       catogaryList: [],
       error: null,
       success: null,
-
-      paymentRadio: "partially-paid",
-      head: null,
-      vendor: "",
-      image: null,
-      location: null,
-      total_amount: null,
-      amount_paid: null,
     };
   },
   mounted() {
@@ -221,7 +142,7 @@ export default {
         data.append(key, value);
       });
 
-      fetch(`${URL}/material/procured`, {
+      fetch(`${URL}/material/consumed`, {
         method: "POST",
         body: data,
         headers: {
